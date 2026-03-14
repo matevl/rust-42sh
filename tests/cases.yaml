@@ -1,26 +1,184 @@
-- name: simple_echo
-  command: echo hello
+# ==============================================================================
+# Step 1: Basic Shell Grammar & Simple Commands
+# Covers: Simple commands, List separators (;), If/Else logic, Single quotes,
+# Comments, and core builtins (echo, true, false, exit).
+# ==============================================================================
 
-- name: echo_n
-  command: echo -n hello
+- name: step1_simple_echo
+  command: echo hello world
 
-- name: redirection_out
-  command: echo hello > out.txt; cat out.txt; rm out.txt
+- name: step1_command_list_semicolon
+  command: echo one; echo two
 
-- name: redirection_append
-  command: echo hello > out.txt; echo world >> out.txt; cat out.txt; rm out.txt
+- name: step1_true_builtin
+  command: "true"
 
-- name: if_true
-  command: if true; then echo yes; fi
+- name: step1_false_builtin
+  command: "false"
 
-- name: if_false
-  command: if false; then echo no; else echo yes; fi
+- name: step1_echo_n_flag
+  command: echo -n "no newline"
 
-- name: if_elif
-  command: if false; then echo no; elif true; then echo yes; fi
+- name: step1_exit_code
+  command: exit 42
 
-- name: pipe_basic (not implemented yet)
-  command: echo hello | cat
+- name: step1_if_true
+  command: if true; then echo "yes"; else echo "no"; fi
 
-- name: simple_cd
-  command: cd /; pwd
+- name: step1_if_false
+  command: if false; then echo "yes"; else echo "no"; fi
+
+- name: step1_if_elif
+  command: if false; then echo "no"; elif true; then echo "yes"; else echo "no"; fi
+
+- name: step1_if_nested
+  command: if true; then if true; then echo "nested"; fi; else echo "fail"; fi
+
+- name: step1_if_compound_list
+  command: if true; echo ignored; then echo body; fi
+
+- name: step1_comments_inline
+  command: echo hello # this is a comment
+
+- name: step1_comments_full_line
+  command: "# entirely commented line"
+
+- name: step1_single_quotes
+  command: echo 'preserve $var and spaces   '
+
+# ==============================================================================
+# Step 2: Redirections, Pipelines, Control Flow, Variables
+# Covers: >, <, >>, Pipes |, negation !, &&, ||, loops (for/while/until),
+# variables, double quotes.
+# ==============================================================================
+
+- name: step2_redir_output_create
+  command: echo "created" > step2_file.txt; cat step2_file.txt; rm step2_file.txt
+
+- name: step2_redir_append
+  command: echo "line1" > step2_append.txt; echo "line2" >> step2_append.txt; cat step2_append.txt; rm step2_append.txt
+
+- name: step2_redir_input
+  command: echo "input data" > step2_input.txt; cat < step2_input.txt; rm step2_input.txt
+
+- name: step2_redir_stderr_to_stdout
+  command: echo "error" >&2 2>&1 | cat
+
+- name: step2_logic_and_success
+  command: true && echo "executed"
+
+- name: step2_logic_and_fail
+  command: false && echo "skipped"
+
+- name: step2_logic_or_success
+  command: true || echo "skipped"
+
+- name: step2_logic_or_fail
+  command: false || echo "executed"
+
+- name: step2_pipeline_basic
+  command: echo "pipeline data" | cat
+
+- name: step2_pipeline_multistage
+  command: echo "hello world" | cat | cat
+
+- name: step2_pipeline_exit_code
+  command: true | false
+
+- name: step2_negation
+  command: "! false"
+
+- name: step2_variables_assignment
+  command: MYVAR=hello; echo $MYVAR
+
+- name: step2_variables_braces
+  command: MYVAR=world; echo hello${MYVAR}
+
+- name: step2_quote_double
+  command: MYVAR=inside; echo "variable $MYVAR expanded"
+
+- name: step2_quote_mixed
+  command: echo "'single in double'"
+
+- name: step2_for_loop
+  command: for i in 1 2 3; do echo $i; done
+
+- name: step2_while_loop
+  command: i=0; while [ $i -lt 3 ]; do echo $i; i=$((i+1)); done
+
+- name: step2_until_loop
+  command: i=0; until [ $i -ge 2 ]; do echo $i; i=$((i+1)); done
+
+# ==============================================================================
+# Step 3: Advanced Builtins, Functions, Subshells
+# Covers: cd, exit, export, dot, functions, subshells (), blocks {}, command subst $(),
+# break, continue.
+# ==============================================================================
+
+- name: step3_builtin_cd
+  command: mkdir -p step3_dir; cd step3_dir; pwd; cd ..; rmdir step3_dir
+
+- name: step3_builtin_export
+  command: export VISIBLE=yes; env | grep VISIBLE
+
+- name: step3_builtin_unset
+  command: export VAR=123; unset VAR; echo "VAR is $VAR"
+
+- name: step3_function_simple
+  command: myfunc() { echo "inside function"; }; myfunc
+
+- name: step3_function_args
+  command: 'myfunc() { echo "arg1: $1"; }; myfunc hello'
+
+- name: step3_command_block
+  command: "{ echo a; echo b; } | cat"
+
+- name: step3_subshell_isolation
+  command: VAR=outer; (VAR=inner; echo $VAR); echo $VAR
+
+- name: step3_command_subs
+  command: echo "start $(echo middle) end"
+
+- name: step3_break
+  command: for i in 1 2 3 4; do if [ $i -eq 3 ]; then break; fi; echo $i; done
+
+- name: step3_continue
+  command: for i in 1 2 3; do if [ $i -eq 2 ]; then continue; fi; echo $i; done
+
+- name: step3_dot_script
+  command: echo "echo sourced" > source_me.sh; . ./source_me.sh; rm source_me.sh
+
+# ==============================================================================
+# Step 4: Case & Aliases
+# Covers: case/esac, alias/unalias
+# ==============================================================================
+
+- name: step4_case_basic
+  command: case word in word) echo match;; *) echo no;; esac
+
+- name: step4_case_wildcard
+  command: case other in word) echo no;; *) echo match;; esac
+
+- name: step4_case_or_pattern
+  command: case apple in apple|banana) echo fruit;; *) echo other;; esac
+
+- name: step4_alias_basic
+  command: alias myecho=echo; myecho "alias works"
+
+- name: step4_unalias
+  command: alias foo=echo; unalias foo; foo "should fail" || echo "failed as expected"
+
+# ==============================================================================
+# Bonus Features
+# Covers: Arithmetic $((...)), Globbing *, Here-doc <<
+# ==============================================================================
+
+- name: bonus_arithmetic_add
+  command: echo $(( 10 + 32 ))
+
+- name: bonus_arithmetic_complex
+  command: echo $(( (2 + 3) * 4 ))
+
+- name: bonus_globbing
+  command: echo Cargo.*
+
