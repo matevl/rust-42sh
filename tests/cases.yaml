@@ -1,0 +1,26 @@
+- name: simple_echo
+  command: echo hello
+
+- name: echo_n
+  command: echo -n hello
+
+- name: redirection_out
+  command: echo hello > out.txt; cat out.txt; rm out.txt
+
+- name: redirection_append
+  command: echo hello > out.txt; echo world >> out.txt; cat out.txt; rm out.txt
+
+- name: if_true
+  command: if true; then echo yes; fi
+
+- name: if_false
+  command: if false; then echo no; else echo yes; fi
+
+- name: if_elif
+  command: if false; then echo no; elif true; then echo yes; fi
+
+- name: pipe_basic (not implemented yet)
+  command: echo hello | cat
+
+- name: simple_cd
+  command: cd /; pwd
